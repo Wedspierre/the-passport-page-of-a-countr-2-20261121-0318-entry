@@ -1,6 +1,7 @@
 import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { join } from "node:path";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
 
@@ -8,7 +9,8 @@ function sha256(filePath) {
   return createHash("sha256").update(readFileSync(filePath)).digest("hex");
 }
 
-const sourcePath = "./entry.png";
+const BOT_DIR = process.env.MAKEFUN_BOT_DIR && process.env.MAKEFUN_BOT_DIR.trim().length > 0 ? process.env.MAKEFUN_BOT_DIR : dirname(fileURLToPath(import.meta.url));
+const sourcePath = join(BOT_DIR, "entry.png");
 
 if (!existsSync(sourcePath)) {
   throw new Error(`entry.png not found at ${sourcePath}`);
